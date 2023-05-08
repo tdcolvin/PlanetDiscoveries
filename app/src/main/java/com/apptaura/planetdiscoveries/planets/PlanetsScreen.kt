@@ -22,15 +22,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.apptaura.planetdiscoveries.BadlyArchitectedPlanetRepository
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.apptaura.planetdiscoveries.Planet
 import com.apptaura.planetdiscoveries.R
 
@@ -39,8 +38,11 @@ fun PlanetsScreen(
     onAddPlanet: () -> Unit,
     onPlanetClick: (Planet) -> Unit,
     modifier: Modifier = Modifier,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    viewModel: PlanetsViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = modifier.fillMaxSize(),
@@ -50,13 +52,11 @@ fun PlanetsScreen(
             }
         }
     ) { paddingValues ->
-        val planets by remember { mutableStateOf(BadlyArchitectedPlanetRepository.getPlanets()) }
-        val isLoading = false
-
         PlanetsContent(
-            loading = isLoading,
-            planets = planets,
+            loading = uiState.isLoading,
+            planets = uiState.planets,
             onPlanetClick = onPlanetClick,
+            getPlanetDistanceDescription = viewModel::getPlanetDistanceDescription,
             modifier = Modifier.padding(paddingValues)
         )
     }
@@ -67,6 +67,7 @@ private fun PlanetsContent(
     loading: Boolean,
     planets: List<Planet>,
     onPlanetClick: (Planet) -> Unit,
+    getPlanetDistanceDescription: (Planet) -> Int,
     modifier: Modifier = Modifier
 ) {
     if (loading) {
@@ -86,6 +87,7 @@ private fun PlanetsContent(
                     PlanetItem(
                         planet = planet,
                         onPlanetClick = onPlanetClick,
+                        getPlanetDistanceDescription = getPlanetDistanceDescription
                     )
                 }
             }
@@ -96,7 +98,8 @@ private fun PlanetsContent(
 @Composable
 private fun PlanetItem(
     planet: Planet,
-    onPlanetClick: (Planet) -> Unit
+    onPlanetClick: (Planet) -> Unit,
+    getPlanetDistanceDescription: (Planet) -> Int
 ) {
     Column(
         modifier = Modifier
@@ -111,13 +114,7 @@ private fun PlanetItem(
             text = planet.name,
             style = MaterialTheme.typography.h4,
         )
-        Text(text =
-            if (planet.distanceLy < 10.0F)
-                stringResource(R.string.reachable_description)
-            else if (planet.distanceLy < 80.0F)
-                stringResource(R.string.reachable_but_far_description)
-            else stringResource(R.string.not_reachable_description)
-        )
+        Text(text = stringResource(id = getPlanetDistanceDescription(planet)))
     }
 }
 
