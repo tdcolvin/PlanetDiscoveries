@@ -3,7 +3,7 @@ package com.apptaura.planetdiscoveries.planets
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apptaura.planetdiscoveries.BadlyArchitectedPlanetRepository
-import com.apptaura.planetdiscoveries.Planet
+import com.apptaura.planetdiscoveries.data.Planet
 import com.apptaura.planetdiscoveries.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

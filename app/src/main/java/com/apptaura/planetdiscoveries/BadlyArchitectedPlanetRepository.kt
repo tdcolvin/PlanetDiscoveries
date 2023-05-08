@@ -1,5 +1,6 @@
 package com.apptaura.planetdiscoveries
 
+import com.apptaura.planetdiscoveries.data.Planet
 import java.util.Date
 
 object BadlyArchitectedPlanetRepository {
@@ -22,9 +23,4 @@ object BadlyArchitectedPlanetRepository {
     }
 }
 
-data class Planet (
-    val id: String,
-    val name: String,
-    val distanceLy: Float,
-    val discovered: Date,
-)
+

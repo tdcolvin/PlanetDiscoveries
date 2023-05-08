@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.apptaura.planetdiscoveries.Planet
+import com.apptaura.planetdiscoveries.data.Planet
 import com.apptaura.planetdiscoveries.R
 
 @Composable
