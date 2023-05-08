@@ -25,9 +25,6 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,55 +32,40 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.apptaura.planetdiscoveries.Planet
-import com.apptaura.planetdiscoveries.BadlyArchitectedPlanetRepository
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.apptaura.planetdiscoveries.R
-import java.lang.NumberFormatException
-import java.util.Date
 
 @Composable
 fun AddEditPlanetScreen(
-    planetId: String?,
     onPlanetUpdate: () -> Unit,
     modifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
+    viewModel: AddEditPlanetViewModel = hiltViewModel()
 ) {
-    val planet = remember { planetId?.let { BadlyArchitectedPlanetRepository.getPlanet(planetId) } }
-    val isLoading = false
-    var planetName by remember { mutableStateOf(planet?.name ?: "") }
-    var planetDistanceLy by remember { mutableStateOf(planet?.distanceLy ?: 1.0F) }
-    val planetDiscovered by remember { mutableStateOf(planet?.discovered ?: Date()) }
-    var isPlanetSaved by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                BadlyArchitectedPlanetRepository.savePlanet(Planet(
-                    id = planetId ?: (1..5).map { "ABCDEFGHIJKLMNOPQRSTUVWXYZ".random() }.toString(),
-                    name = planetName,
-                    distanceLy = planetDistanceLy,
-                    discovered = planetDiscovered
-                ))
-                isPlanetSaved = true
-            }) {
+            FloatingActionButton(onClick = viewModel::savePlanet) {
                 Icon(Icons.Filled.Done, stringResource(R.string.save_planet_description))
             }
         }
     ) { paddingValues ->
         AddEditPlanetContent(
-            loading = isLoading,
-            name = planetName,
-            distanceLy = planetDistanceLy,
-            onNameChanged = { planetName = it },
-            onDistanceLyChanged = { planetDistanceLy = it },
+            loading = uiState.isLoading,
+            name = uiState.planetName,
+            distanceLy = uiState.planetDistanceLy,
+            onNameChanged = { newName -> viewModel.setPlanetName(newName) },
+            onDistanceLyChanged = { newDistanceLy -> viewModel.setPlanetDistanceLy(newDistanceLy) },
             modifier = Modifier.padding(paddingValues)
         )
 
         // Check if the planet is saved and call onPlanetUpdate event
-        LaunchedEffect(isPlanetSaved) {
-            if (isPlanetSaved) {
+        LaunchedEffect(uiState.isPlanetSaved) {
+            if (uiState.isPlanetSaved) {
                 onPlanetUpdate()
             }
         }

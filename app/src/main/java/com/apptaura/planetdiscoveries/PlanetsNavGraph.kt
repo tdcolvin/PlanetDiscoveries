@@ -78,7 +78,6 @@ fun PlanetsNavGraph(
         ) { entry ->
             val planetId = entry.arguments?.getString(PLANET_ID_ARG)
             AddEditPlanetScreen(
-                planetId = planetId,
                 onPlanetUpdate = {
                     navActions.navigateToPlanets(
                         if (planetId == null) ADD_EDIT_RESULT_OK else EDIT_RESULT_OK
