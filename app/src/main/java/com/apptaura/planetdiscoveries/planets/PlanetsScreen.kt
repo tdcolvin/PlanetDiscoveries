@@ -4,9 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,8 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.apptaura.planetdiscoveries.Planet
 import com.apptaura.planetdiscoveries.BadlyArchitectedPlanetRepository
+import com.apptaura.planetdiscoveries.Planet
 import com.apptaura.planetdiscoveries.R
 
 @Composable
@@ -99,10 +98,9 @@ private fun PlanetItem(
     planet: Planet,
     onPlanetClick: (Planet) -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxHeight()
             .padding(
                 horizontal = 16.dp,
                 vertical = 8.dp,
@@ -111,10 +109,14 @@ private fun PlanetItem(
     ) {
         Text(
             text = planet.name,
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(
-                start = 16.dp
-            ),
+            style = MaterialTheme.typography.h4,
+        )
+        Text(text =
+            if (planet.distanceLy < 10.0F)
+                stringResource(R.string.reachable_description)
+            else if (planet.distanceLy < 80.0F)
+                stringResource(R.string.reachable_but_far_description)
+            else stringResource(R.string.not_reachable_description)
         )
     }
 }

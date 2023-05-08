@@ -9,4 +9,7 @@
     <string name="distance_description">Enter distance (lightyears)</string>
     <string name="distance_label">Distance from your home planet (lightyears)</string>
     <string name="plane_name_label">Name your planet</string>
+    <string name="reachable_description">Reachable with a lightspeed engine</string>
+    <string name="reachable_but_far_description">Reachable at lightspeed, but you\'ll be a lot older</string>
+    <string name="not_reachable_description">Beyond the reach of your lifespan</string>
 </resources>
